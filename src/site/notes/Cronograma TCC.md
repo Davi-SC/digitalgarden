@@ -1,9 +1,9 @@
 ---
-{"dg-publish":true,"permalink":"/cronograma-tcc/","tags":["gardenEntry"],"created":"2026-02-02T15:22:38.759-03:00","updated":"2026-02-12T15:12:52.293-03:00"}
+{"dg-publish":true,"permalink":"/cronograma-tcc/","tags":["gardenEntry"],"created":"2026-02-02T15:22:38.759-03:00","updated":"2026-02-18T15:23:55.193-03:00"}
 ---
 
 
-
+Hospedado em: https://tcc-davi.netlify.app
 Este repositório serve para registro e controle de atividades ligadas ao meu TCC seguindo as listadas no cronograma elaborado no projeto
 
 

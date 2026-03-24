@@ -1,5 +1,5 @@
 ---
-{"dg-publish":true,"permalink":"/score-composto/","created":"2026-03-23T17:35:34.083-03:00","updated":"2026-03-23T17:37:07.394-03:00"}
+{"dg-publish":true,"permalink":"/score-composto/","created":"2026-03-23T17:35:34.083-03:00","updated":"2026-03-23T23:32:45.549-03:00"}
 ---
 
 ### Abordagem 1: Score por Zonas de Referência (Mais Simples e Direta)
@@ -20,7 +20,7 @@ Nesta abordagem, definimos metas "ideais" de mercado para cada métrica e damos 
 
 ---
 
-### Abordagem 2: Score Relativo / Percentil (Mais Acadêmica / Machine Learning)
+### Abordagem 2: Score Relativo / Percentil
 
 Se o objetivo é preparar o terreno para Machine Learning (como mencionado na documentação do projeto), não usamos "chutes" de mercado. Em vez disso, **comparamos os perfis ou as semanas entre si** usando um _Min-Max Scaler_ (exatamente o que fizemos no video_metrics_service).
 

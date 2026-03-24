@@ -1,5 +1,5 @@
 ---
-{"dg-publish":true,"permalink":"/desenvolvimento/","created":"2026-02-12T11:18:37.528-03:00","updated":"2026-03-23T17:36:22.141-03:00"}
+{"dg-publish":true,"permalink":"/desenvolvimento/","created":"2026-02-12T11:18:37.528-03:00","updated":"2026-03-24T00:01:37.230-03:00"}
 ---
 
 # Checklist — Backend ETL Instagram Analytics
@@ -144,23 +144,22 @@
 
 - [x] Salvar em `engagement_metrics` (por date) ou campo novo em `profile_snapshots`
 
-  
 
 ### 2.3 sentiment_service
 
 
-- [ ] **Definir qual modelo NLP iremos utilizar -> pysentimiento, vander, ou outro**
+- [x] **Definir qual modelo NLP iremos utilizar -> pysentimiento, vander, ou outro**
+	- [x] Escolhi pysentimiento - possui suporte para lingua portuguesa, emojis
 
-- [ ] Ler comentários sem `sentiment_score` da collection `comments` (índice sparse já existe)
+- [x] Ler comentários sem `sentiment_score` da collection `comments` (índice sparse já existe)
 
-- [ ] Aplicar modelo NLP 
+- [x] Aplicar modelo NLP
 
-- [ ] Atualizar documento do comentário com `sentiment_score` (float) e `sentiment_label` (pos/neg/neu)
+- [x] Atualizar documento do comentário com `sentiment_score` (float) e `sentiment_label` (pos/neg/neu)
 
-- [ ] Agregar sentimento médio por post em `engagement_metrics` ou `post_insights`
+- [x] Agregar sentimento médio por post em `engagement_metrics` ou `post_insights`
 
   
-
 ### 2.4 video_metrics_service  
 
 - [x] Ler `post_insights` com `media_type = VIDEO` e campos `ig_reels_avg_watch_time`, `ig_reels_video_view_total_time`, `views`
@@ -192,36 +191,31 @@
 
   
 
-## 3. Airflow — DAGs
+## 3. Airflow — DAGs (Orquestração de Tasks)
 
   
 
-### Extract DAGs
+### 3.1 Daily ETL DAG (`dag_daily_etl.py`)
 
-- [ ] `dag_daily_snapshot.py` → aciona `snapshot_service` + `profile_service` todo dia às 03:00
+- [ ] Criar DAG com agendamento diário (ex: `03:00`)
 
-- [ ] `dag_media_discovery.py` → aciona `media_discovery_service` todo dia às 02:00
+- [ ] Configurar tasks sequenciais de **Extração**: `profile` >> `media_discovery` >> `snapshot` >> `post_insights` >> `comments`
 
-- [ ] `dag_comments.py` → aciona `comments_service` após `dag_daily_snapshot`
+- [ ] Configurar tasks sequenciais de **Transformação** (dependentes da Extração): `engagement` >> `growth` >> `video_metrics` >> `sentiment`
 
-- [ ] `dag_post_insights.py` → aciona `insights_service` (posts) todo dia
-
-- [ ] `dag_account_insights.py` → aciona `insights_service` (account) semanalmente (domingo)
+- [ ] Implementar bitshift (`>>`) para garantir que dados não sejam calculados sem base atualizada
 
   
 
-### Transform DAGs
+### 3.2 Weekly Insights DAG (`dag_weekly_metrics.py`)
 
-- [ ] `dag_engagement_processing.py` → aciona `engagement_service` + `growth_service` após `dag_daily_snapshot`
+- [ ] Criar DAG com agendamento semanal (ex: domingos `04:00`)
 
-- [ ] `dag_sentiment_processing.py` → aciona `sentiment_service` após `dag_comments`
+- [ ] Task de Extração: acionar `insights_service` (account / demografia)
 
-- [ ] `dag_video_metrics.py` → aciona `video_metrics_service` após `dag_post_insights`
-
-- [ ] `dag_qualification.py` → aciona `qualification_service` semanalmente
+- [ ] Task de Transformação: acionar `qualification_service` (Score composto da audiência)
 
   
-
 ### Configuração Airflow
 
 - [ ] Definir `AIRFLOW_HOME` e inicializar DB do Airflow (SQLite dev / Postgres prod)
@@ -231,7 +225,6 @@
 - [ ] Criar `docker-compose.yml` com Airflow + MongoDB (dev local)
 
 - [ ] Configurar Airflow Connections: `mongo_default`, `ig_api`
-
   
 
 ---

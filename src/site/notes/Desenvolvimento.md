@@ -1,5 +1,5 @@
 ---
-{"dg-publish":true,"permalink":"/desenvolvimento/","created":"2026-02-12T11:18:37.528-03:00","updated":"2026-03-24T00:01:37.230-03:00"}
+{"dg-publish":true,"permalink":"/desenvolvimento/","created":"2026-02-12T11:18:37.528-03:00","updated":"2026-03-25T14:27:57.486-03:00"}
 ---
 
 # Checklist — Backend ETL Instagram Analytics
@@ -10,13 +10,13 @@
 
 - [x] Reorganizar estrutura de pastas (`etl/`, `dags/`, `services/`, `repositories/`)
 
-- [x] Expandir [mongo_repository.py](file:///c:/Users/cruzd/OneDrive/%C3%81rea%20de%20Trabalho/PIBIC_TCC/projeto/backend-ig-analysis/app/repositories/mongo_repository.py) com todas as collections novas
+- [x] Expandir mongo_repository.py com todas as collections novas
 
-- [x] Criar todos os índices compostos (unique, parciais) no [create_indexes()](file:///c:/Users/cruzd/OneDrive/%C3%81rea%20de%20Trabalho/PIBIC_TCC/projeto/backend-ig-analysis/app/repositories/mongo_repository.py#34-47)
+- [x] Criar todos os índices compostos (unique, parciais) no create_indexes()
 
 - [x] Criar models Pydantic para cada collection (validação de entrada/saída)
 
-- [x] Configurar variáveis de ambiente ([.env](file:///c:/Users/cruzd/OneDrive/%C3%81rea%20de%20Trabalho/PIBIC_TCC/projeto/backend-ig-analysis/.env)) para Airflow + Mongo + IG API
+- [x] Configurar variáveis de ambiente .env para Airflow + Mongo + IG API
 
   
 
@@ -86,13 +86,21 @@
 
   
 
-### 1.6 insights_service — Account (semanal)
+### 1.6 insights_service — Account (semanal / diário para loyalty)
 
-- [x] Buscar métricas de conta via `/me/insights` com período 7 dias
+- [x] Buscar métricas de conta via `/{ig_user_id}/insights` com período day/lifetime
 
-- [x] Campos: `reach`, `profile_views`, `total_interactions`, `audience_country/city/age/gender`
+- [x] Campos: `accounts_engaged, views, reach, profile_views, total_interactions` (+ `follows` no facebook)
 
-- [x] Inserir em `account_insights` com `period_since` / `period_until`
+- [x] Coletar demográficos: `audience_country, city, age, gender` (um breakdown por chamada)
+
+- [x] Upsert em `profile_insights` com `{ profile_id, period_until }` unique
+
+  
+
+---
+
+  
 
 ## 2. Transform — Serviços de processamento
 
@@ -120,12 +128,6 @@
 
 - [x] Calcular `velocity_comments_24h` = delta de comentários em 24h
 
-- [x] Calcular `loyalty_rate` = page_interaction_rate / virality_rate  ← Sanches & Ramos (2025)
-
-  - `page_interaction_rate` = unique_accounts_engaged / reach
-
-  - `virality_rate` = total_interactions / views
-
 - [x] Calcular `er_views` = total_interactions / views  ← Padrão Hootsuite/Dashthis (views substitui impressions)
 
 - [x] Calcular `days_since_published`
@@ -134,54 +136,55 @@
 
   
 
-### 2.2 growth_service 
+### 2.2 growth_service + profile_metrics
 
-- [x] Ler `profile_snapshots` consecutivos do mesmo perfil 
+- [x] Ler `profile_snapshots` consecutivos e `profile_insights` do mesmo perfil
 
 - [x] Calcular variação diária/semanal de `followers_count` (crescimento absoluto e %)
 
 - [x] Calcular variação de `media_count` (frequência de publicação)
 
-- [x] Salvar em `engagement_metrics` (por date) ou campo novo em `profile_snapshots`
+- [x] Calcular `loyalty_rate` = page_interaction_rate / virality_rate  ← Nível Perfil (Sanches & Ramos, 2025)
 
+  - `page_interaction_rate` = accounts_engaged / reach
+
+  - `virality_rate` = total_interactions / views
+
+- [x] Salvar objeto `growth` no `profile_snapshots`
+
+  
 
 ### 2.3 sentiment_service
 
-
-- [x] **Definir qual modelo NLP iremos utilizar -> pysentimiento, vander, ou outro**
-	- [x] Escolhi pysentimiento - possui suporte para lingua portuguesa, emojis
-
 - [x] Ler comentários sem `sentiment_score` da collection `comments` (índice sparse já existe)
 
-- [x] Aplicar modelo NLP
+- [x] Aplicar modelo NLP — sugestão: `pysentimiento` (treinado em pt-BR) ou `VADER`
 
 - [x] Atualizar documento do comentário com `sentiment_score` (float) e `sentiment_label` (pos/neg/neu)
 
 - [x] Agregar sentimento médio por post em `engagement_metrics` ou `post_insights`
 
   
-### 2.4 video_metrics_service  
+
+### 2.4 video_metrics_service
 
 - [x] Ler `post_insights` com `media_type = VIDEO` e campos `ig_reels_avg_watch_time`, `ig_reels_video_view_total_time`, `views`
 
-- [x] Calcular `watch_time_per_view` = `ig_reels_video_view_total_time / views` (proxy do avg, cross-check) 
+- [x] Calcular `watch_time_per_view` = `ig_reels_video_view_total_time / views` (proxy do avg, cross-check)
 
-- [x] Calcular ranking relativo de retenção entre Reels do mesmo perfil (normalizado 0–1) 
+- [x] Calcular ranking relativo de retenção entre Reels do mesmo perfil (normalizado 0–1)
 
-- [x] Nota: a duração do vídeo não é retornada pela Graph API — usar comparação relativa entre posts 
+- [x] Nota: a duração do vídeo não é retornada pela Graph API — usar comparação relativa entre posts
 
-- [x] Salvar resultado na `engagement_metrics` do post (campo `reel_retention_score`) 
+- [x] Salvar resultado na `engagement_metrics` do post (campo `reel_retention_score`)
 
   
 
 ### 2.5 qualification_service
 
-
-- [ ] **Definir como calcular o [[Score composto\|Score composto]]**
-
 - [ ] Ler `engagement_metrics` + `profile_insights` do período
 
-- [ ] Segmentar audiência por score composto
+- [ ] Segmentar audiência por score composto (ER + crescimento + sentimento)
 
 - [ ] Inserir/atualizar em `audience_profiles`
 
@@ -216,6 +219,7 @@
 - [ ] Task de Transformação: acionar `qualification_service` (Score composto da audiência)
 
   
+
 ### Configuração Airflow
 
 - [ ] Definir `AIRFLOW_HOME` e inicializar DB do Airflow (SQLite dev / Postgres prod)
@@ -225,6 +229,7 @@
 - [ ] Criar `docker-compose.yml` com Airflow + MongoDB (dev local)
 
 - [ ] Configurar Airflow Connections: `mongo_default`, `ig_api`
+
   
 
 ---

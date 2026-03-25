@@ -1,6 +1,7 @@
 ---
-{"dg-publish":true,"permalink":"/score-composto/","created":"2026-03-23T17:35:34.083-03:00","updated":"2026-03-23T23:32:45.549-03:00"}
+{"dg-publish":true,"permalink":"/score-composto/","created":"2026-03-25T18:41:31.431-03:00","updated":"2026-03-25T18:41:49.342-03:00"}
 ---
+
 
 ### Abordagem 1: Score por Zonas de Referência (Mais Simples e Direta)
 

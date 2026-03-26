@@ -1,5 +1,5 @@
 ---
-{"dg-publish":true,"permalink":"/hipoteses-e-estrategias/","created":"2026-03-23T17:35:34.083-03:00","updated":"2026-03-25T16:55:08.707-03:00"}
+{"dg-publish":true,"permalink":"/hipoteses-e-estrategias/","created":"2026-03-23T17:35:34.083-03:00","updated":"2026-03-26T15:20:08.523-03:00"}
 ---
 
 ## H1 - Métricas compostas >>> simples

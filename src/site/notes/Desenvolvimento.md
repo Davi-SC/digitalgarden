@@ -1,5 +1,5 @@
 ---
-{"dg-publish":true,"permalink":"/desenvolvimento/","created":"2026-02-12T11:18:37.528-03:00","updated":"2026-03-25T14:27:57.486-03:00"}
+{"dg-publish":true,"permalink":"/desenvolvimento/","created":"2026-02-12T11:18:37.528-03:00","updated":"2026-03-26T15:07:41.327-03:00"}
 ---
 
 # Checklist — Backend ETL Instagram Analytics
@@ -10,13 +10,13 @@
 
 - [x] Reorganizar estrutura de pastas (`etl/`, `dags/`, `services/`, `repositories/`)
 
-- [x] Expandir mongo_repository.py com todas as collections novas
+- [x] Expandir [mongo_repository.py](file:///c:/Users/cruzd/OneDrive/%C3%81rea%20de%20Trabalho/PIBIC_TCC/projeto/backend-ig-analysis/app/repositories/mongo_repository.py) com todas as collections novas
 
-- [x] Criar todos os índices compostos (unique, parciais) no create_indexes()
+- [x] Criar todos os índices compostos (unique, parciais) no [create_indexes()](file:///c:/Users/cruzd/OneDrive/%C3%81rea%20de%20Trabalho/PIBIC_TCC/projeto/backend-ig-analysis/app/repositories/mongo_repository.py#34-47)
 
 - [x] Criar models Pydantic para cada collection (validação de entrada/saída)
 
-- [x] Configurar variáveis de ambiente .env para Airflow + Mongo + IG API
+- [x] Configurar variáveis de ambiente ([.env](file:///c:/Users/cruzd/OneDrive/%C3%81rea%20de%20Trabalho/PIBIC_TCC/projeto/backend-ig-analysis/.env)) para Airflow + Mongo + IG API
 
   
 
@@ -198,25 +198,35 @@
 
   
 
-### 3.1 Daily ETL DAG (`dag_daily_etl.py`)
+### 3.1 Instagram ETL DAG (`dag_instagram_etl.py`)
 
-- [ ] Criar DAG com agendamento diário (ex: `03:00`)
+- [x] Criar DAG com `schedule_interval` configurável (padrão `@daily` às `03:00`)
 
-- [ ] Configurar tasks sequenciais de **Extração**: `profile` >> `media_discovery` >> `snapshot` >> `post_insights` >> `comments`
+- [x] Configurar tasks de **Extração**: `extract_profile` >> `extract_media_discovery` >> `extract_snapshot` >> `extract_post_insights` >> `extract_comments`
 
-- [ ] Configurar tasks sequenciais de **Transformação** (dependentes da Extração): `engagement` >> `growth` >> `video_metrics` >> `sentiment`
+- [x] Configurar tasks de **Transformação de posts**: `transform_engagement` >> `transform_video_metrics` >> `transform_sentiment`
 
-- [ ] Implementar bitshift (`>>`) para garantir que dados não sejam calculados sem base atualizada
+- [x] Usar `data_interval_end` como `target_date` para tasks date-aware (snapshot, engagement, video_metrics)
+
+- [x] Implementar bitshift (`>>`) garantindo que a transformação só roda após extração completa
+
+- [x] Centralizar `profile_id` via Airflow Variable `ig_profile_id`
+
+- [x] `transform_growth` movido para `dag_weekly_insights` (depende de `profile_insights` account-level)
 
   
 
-### 3.2 Weekly Insights DAG (`dag_weekly_metrics.py`)
+### 3.2 Weekly Insights DAG (`dag_weekly_insights.py`)
 
-- [ ] Criar DAG com agendamento semanal (ex: domingos `04:00`)
+- [x] Criar DAG com agendamento semanal (domingos `04:00` via cron `0 4 * * 0`)
 
-- [ ] Task de Extração: acionar `insights_service` (account / demografia)
+- [x] Task de Extração: `extract_profile_insights` → `run_profile_insights_service` (7 dias, métricas de conta + demográficos)
 
-- [ ] Task de Transformação: acionar `qualification_service` (Score composto da audiência)
+- [x] Task de Transformação: `transform_growth` → `run_growth_service` (crescimento 7d + loyalty_rate)
+
+- [x] Task placeholder: `transform_qualification` (comentada até `qualification_service` ser implementado)
+
+- [x] Usar `data_interval_end` como `target_until` / `target_date` para garantir janela de 7 dias correta
 
   
 

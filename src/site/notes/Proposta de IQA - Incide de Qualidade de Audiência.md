@@ -1,5 +1,5 @@
 ---
-{"dg-publish":true,"permalink":"/proposta-de-iqa-incide-de-qualidade-de-audiencia/","created":"2026-03-25T14:18:15.682-03:00","updated":"2026-03-26T12:00:46.305-03:00"}
+{"dg-publish":true,"permalink":"/proposta-de-iqa-incide-de-qualidade-de-audiencia/","created":"2026-03-25T14:18:15.682-03:00","updated":"2026-03-28T15:26:15.966-03:00"}
 ---
 
 Como eu pensei:
@@ -18,10 +18,10 @@ er_weighted_reach = (shares×1.5 + likes×1.0 + comments×2.0 + saves×2.0) / re
 
 Para perfil
 
-~~**``IQA = Σer_wighted_reach x loyalty_rate``**~~
+**``IQA = Σer_wighted_reach x loyalty_rate``**
 
 
-Sugestão de melhoria da IA:
+Sugestão de melhoria da IQA:
 
 **``IQA_Engajamento = Σ(er_weighted_reach × weight_i) / Σ(weight_i)``**
 

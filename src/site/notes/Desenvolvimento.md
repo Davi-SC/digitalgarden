@@ -1,5 +1,5 @@
 ---
-{"dg-publish":true,"permalink":"/desenvolvimento/","created":"2026-02-12T11:18:37.528-03:00","updated":"2026-03-26T15:07:41.327-03:00"}
+{"dg-publish":true,"permalink":"/desenvolvimento/","created":"2026-02-12T11:18:37.528-03:00","updated":"2026-03-26T16:52:57.978-03:00"}
 ---
 
 # Checklist — Backend ETL Instagram Analytics
@@ -232,13 +232,17 @@
 
 ### Configuração Airflow
 
-- [ ] Definir `AIRFLOW_HOME` e inicializar DB do Airflow (SQLite dev / Postgres prod)
+- [x] Criar `docker-compose.yml` com Airflow (LocalExecutor + PostgreSQL) — MongoDB é Atlas
 
-- [ ] Criar `airflow.cfg` adaptado ao projeto
+- [ ] Inicializar Airflow: `docker-compose up airflow-init` (cria DB + usuário admin)
 
-- [ ] Criar `docker-compose.yml` com Airflow + MongoDB (dev local)
+- [ ] Subir serviços: `docker-compose up -d` → UI em http://localhost:8080
 
-- [ ] Configurar Airflow Connections: `mongo_default`, `ig_api`
+- [ ] Configurar Airflow Variable via UI ou CLI: `ig_profile_id = <seu_profile_id>`
+
+- [ ] Configurar Airflow Connection `mongo_default` via UI (Admin > Connections):
+
+  - Conn Type: `MongoDB` | Host: URI do Atlas | Schema: `social-data-lab`
 
   
 

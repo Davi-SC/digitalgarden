@@ -1,5 +1,5 @@
 ---
-{"dg-publish":true,"permalink":"/proposta-de-iqa-incide-de-qualidade-de-audiencia/","created":"2026-03-25T14:18:15.682-03:00","updated":"2026-03-28T15:26:15.966-03:00"}
+{"dg-publish":true,"permalink":"/proposta-de-iqa-incide-de-qualidade-de-audiencia/","created":"2026-03-25T14:18:15.682-03:00","updated":"2026-04-08T11:28:17.489-03:00"}
 ---
 
 Como eu pensei:
@@ -44,4 +44,29 @@ Onde:
 	-> ``Taxa de viralidade = interações(total_interactions)/impressões(views)``
 
 - Exatamente como foi proposto por Sanches2025, so precisamos substituir impressões por views, pois a API depreciou Impressions na versão 22, mas as duas significam o mesmo.
+
+
+Pela limitação dos datasets é preciso adaptar algumas coisas.
+
+er_weighted pode ser um conceito geral e ai adaptamos ele para cada rede social com base nas referencias. 
+
+Por exemplo: er_weighted = Σ(interação x peso) / tamanho da audiência
+
+Para o instagram teriamos: er_weighted = (shares×1.5 + likes×1.0 + comments×2.0 + saves×2.0) / reach
+E ai para as outras redes poderiamos adaptar com as métricas específicas da rede(no twitter/X por exemplo incluiriamos o retweet, provavelmente com o mesmo peso do shares para o instagram, e adaptariamos o reach para a medida de tamanho de audiência da rede).
+
+Adaptando a abordagem assim podemos utilizar os datasets a seguir:
+
+### Para Instagram
+er_weighted_instagram = (shares×1.5 + likes×1.0 + comments×2.0 + saves×2.0) / reach
+Datasets: [IG Post Analytics](https://www.kaggle.com/datasets/srisyra02/instagram-post-analytics-dataset) e [IG Analytics Dataset](https://www.kaggle.com/datasets/kundanbedmutha/instagram-analytics-dataset) Ambos contem todas as métricas necessárias, e ambos com 30k posts(sinteticos e tem que verificar se um não é a copia do outro)
+
+### Para Tiktok
+er_weighted_tiktok = (shares × 1.5 + likes × 1.0 + comments × 2.0 + downloads × 2.0) / views 
+Datasets: [Tiktok User Engagement Data](https://www.kaggle.com/datasets/yakhyojon/tiktok) e [Tiktok 2025 Dataset](https://www.kaggle.com/datasets/haziqhalifi/tiktok-2025-dataset), porém , o segundo não tem *downloads*
+
+### Para Twitter/X
+er_weighted_twitter = (retweets × 1.5 + likes × 1.0 + replies × 2.0 + quotes × 1.8 ) / views
+Datasets:  [Twitter Dataset February 2024](https://www.kaggle.com/datasets/fastcurious/twitter-dataset-february-2024)e [Twitter New Dataset 2024 March Data](https://www.kaggle.com/datasets/fastcurious/twitter-new-dataset-2024-march-data) contem dados completos de twites extraidos por web-scrapping
+
 

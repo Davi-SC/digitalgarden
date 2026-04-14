@@ -1,5 +1,5 @@
 ---
-{"dg-publish":true,"permalink":"/proposta-de-iqa-incide-de-qualidade-de-audiencia/","created":"2026-03-25T14:18:15.682-03:00","updated":"2026-04-08T11:28:17.489-03:00"}
+{"dg-publish":true,"permalink":"/proposta-de-iqa-incide-de-qualidade-de-audiencia/","created":"2026-03-25T14:18:15.682-03:00","updated":"2026-04-14T17:16:51.833-03:00"}
 ---
 
 Como eu pensei:
@@ -69,4 +69,10 @@ Datasets: [Tiktok User Engagement Data](https://www.kaggle.com/datasets/yakhyojo
 er_weighted_twitter = (retweets × 1.5 + likes × 1.0 + replies × 2.0 + quotes × 1.8 ) / views
 Datasets:  [Twitter Dataset February 2024](https://www.kaggle.com/datasets/fastcurious/twitter-dataset-february-2024)e [Twitter New Dataset 2024 March Data](https://www.kaggle.com/datasets/fastcurious/twitter-new-dataset-2024-march-data) contem dados completos de twites extraidos por web-scrapping
 
-
+# Validação do Método:
+Pesquisei algumas formas de validação para o nosso método proposto, cada uma delas é detalhada nas páginas linkadas abaixo
+- [[Buckets Labels\|Buckets Labels]]
+- [[Validação preditiva\|Validação preditiva]]
+- [[Sensibilidade dos pesos\|Sensibilidade dos pesos]]: Validar se os pesos escolhidos estão bons , testando varias combinações e fazendo teste ANOVA com de cada combinação com os Buckets Labels.
+- [[PCA\|PCA]]: Fazer a analise de componentes principais entre as métricas de engajamento básicas e verificar a correlação da componente principal com er_weighted_reach
+- 
